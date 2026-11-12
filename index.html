@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>시험범위 AI 기출 예측 연구소</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f5fb;color:#19233a;font-family:system-ui,"Malgun Gothic",sans-serif;line-height:1.55}.wrap{max-width:960px;margin:28px auto;padding:0 16px}.hero{background:linear-gradient(130deg,#1d2d61,#4269e8);color:white;padding:28px;border-radius:20px;margin-bottom:18px}.hero h1{margin:0 0 6px;font-size:30px}.hero p{margin:0;color:#e5eaff}.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.panel{background:white;border:1px solid #e0e5ef;border-radius:17px;padding:21px}.wide{grid-column:1/-1}h2{font-size:19px;margin:0 0 14px}.field{margin-bottom:13px}label{display:block;font-weight:650;font-size:14px;margin-bottom:5px}input,select,textarea{width:100%;padding:11px;border:1px solid #cbd3e1;border-radius:10px;font:inherit}textarea{min-height:145px;resize:vertical}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.checks{display:flex;flex-wrap:wrap;gap:12px}.checks label{display:flex;align-items:center;gap:6px;font-weight:500}.checks input{width:auto}button{border:0;border-radius:10px;padding:12px 16px;font:inherit;font-weight:700;cursor:pointer}.primary{background:#3559df;color:white}.secondary{background:#edf1ff;color:#2444c4}.dark{background:#202b43;color:white}.hint{font-size:13px;color:#68738a}.notice{background:#fff8e8;border:1px solid #f1dfb1;border-radius:11px;padding:13px;font-size:14px;color:#71551a;margin-top:14px}.steps{display:grid;grid-template-columns:1fr 1fr;gap:9px}.step{background:#f5f7fc;border-radius:10px;padding:12px;font-size:13px}.step b{display:block}.actions,.links{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}.links a{background:#edf1ff;color:#2444c4;text-decoration:none;border-radius:9px;padding:9px 12px;font-size:14px;font-weight:650}#result{display:none}#prompt{min-height:330px;font:13px ui-monospace,monospace;white-space:pre-wrap}footer{text-align:center;color:#788197;font-size:12px;padding:20px}@media(max-width:680px){.grid,.row{grid-template-columns:1fr}.wide{grid-column:auto}.hero h1{font-size:25px}}
+</style></head><body><main class="wrap">
+<header class="hero"><h1>시험범위 AI 기출 예측 연구소</h1><p>시험 범위를 입력하면 조사할 자료, 검색 링크, AI 분석 요청문을 만들어 줍니다.</p></header>
+<div class="grid">
+<section class="panel"><h2>① 시험 정보 입력</h2>
+<div class="field"><label>학교 / 학년</label><input id="school" value="중학교 3학년"></div>
+<div class="row"><div class="field"><label>과목</label><input id="subject" value="역사"></div><div class="field"><label>시험 종류</label><select id="exam"><option>기말고사</option><option>중간고사</option><option>수행평가</option><option>모의고사</option></select></div></div>
+<div class="row"><div class="field"><label>교과서 출판사 (선택)</label><input id="publisher" placeholder="예: 미래엔, 비상, 천재"></div><div class="field"><label>난이도</label><select id="difficulty"><option>상</option><option>중</option><option>최상</option><option>기초부터 단계별</option></select></div></div>
+<div class="field"><label>시험 범위</label><textarea id="scope" placeholder="예: 조선 건국부터 조선 후기까지&#10;정도전, 과거제, 붕당 정치, 세도 정치 포함"></textarea></div>
+<div class="field"><label>원하는 결과</label><div class="checks">
+<label><input type="checkbox" id="summary" checked> 핵심 정리</label><label><input type="checkbox" id="compare" checked> 비교·분석</label><label><input type="checkbox" id="mcq" checked> 객관식</label><label><input type="checkbox" id="written" checked> 서술형</label><label><input type="checkbox" id="answers" checked> 정답·해설</label>
+</div></div><button class="primary" style="width:100%" onclick="makePrompt()">분석 요청문 만들기</button>
+<p class="hint">입력한 내용은 이 파일 안에서만 처리되며 별도 서버로 전송되지 않습니다.</p></section>
+<section class="panel"><h2>② 사용 방법</h2><div class="steps">
+<div class="step"><b>1. 시험 범위 입력</b>과목과 시험 범위를 적습니다.</div><div class="step"><b>2. 요청문 생성</b>AI가 조사할 작업을 정리합니다.</div><div class="step"><b>3. 자료 검색</b>관련 기출과 교과 자료를 검색합니다.</div><div class="step"><b>4. ChatGPT에 전달</b>요청문을 붙여넣으면 분석을 진행합니다.</div></div>
+<div class="notice"><b>중요한 작동 방식</b><br>API 키 없이 실행되는 HTML 프로그램입니다. 독립 실행 파일이 ChatGPT의 웹 검색 기능을 직접 호출할 수는 없습니다. 대신 검색 링크와 복사용 요청문을 만들고, ChatGPT에서 실제 조사와 문제 제작을 진행하도록 설계했습니다.</div>
+<h2 style="margin-top:22px">AI에게 요청하는 분석</h2><ul class="hint" style="font-size:14px;line-height:1.9"><li>교과서·교육 자료·공개 기출 조사</li><li>출처와 실제 기출 여부 표시</li><li>중요 개념 및 출제 유형 분석</li><li>난이도별 예상문제 제작</li><li>정답·해설 및 암기 체크리스트</li><li>확인된 사실과 AI 추론 구분</li></ul></section>
+<section class="panel wide" id="result"><h2>③ 분석 요청문 및 검색 링크</h2><p class="hint">요청문을 복사해 ChatGPT 대화창에 붙여넣으세요.</p><textarea id="prompt" readonly></textarea>
+<div class="actions"><button class="primary" onclick="copyText()">요청문 복사</button><button class="secondary" onclick="window.open('https://chatgpt.com/','_blank')">ChatGPT 열기</button><button class="dark" onclick="saveText()">요청문 TXT 저장</button></div>
+<h2 style="margin-top:22px">관련 자료 검색 바로가기</h2><div id="links" class="links"></div></section>
+</div><footer>시험범위 AI 기출 예측 연구소 · 개인 학습 보조 도구</footer></main>
+<script>
+function v(id){return document.getElementById(id).value.trim()}
+function makePrompt(){
+ const scope=v('scope');if(!scope){alert('시험 범위를 입력해 주세요.');return}
+ const school=v('school'),subject=v('subject'),exam=v('exam'),pub=v('publisher'),diff=v('difficulty');
+ let wants=[];[['summary','핵심 개념과 용어 정리'],['compare','비교·분석 및 인과관계'],['mcq','객관식 예상문제'],['written','서술형·단답형 예상문제'],['answers','정답과 자세한 해설']].forEach(([id,t])=>{if(document.getElementById(id).checked)wants.push(t)});
+ const p=`너는 중학교 시험 대비 자료 조사 및 출제 분석 전문가야.
+[시험 정보]
+학교/학년: ${school}
+과목: ${subject}
+시험: ${exam}
+출판사: ${pub||'미입력'}
+난이도: ${diff}
+시험 범위:
+${scope}
+
+[수행할 작업]
+1. 웹에서 시험 범위와 관련된 교과서 출판사 자료, 교육 자료, 공개 기출문제, 학습 자료를 검색해.
+2. 자료마다 제목, 출처, 링크, 신뢰도, 시험 범위와의 관련성을 정리해. 실제로 확인하지 않은 자료를 읽었다고 하지 마.
+3. 실제 기출, 참고 학습문제, 네가 만든 예상문제를 명확히 구분해. 확인할 수 없으면 '기출 확인 불가'라고 표시해.
+4. 범위 전체를 단원별로 빠짐없이 정리하고 핵심 개념·인물·사건·연도·원인과 결과·비교 포인트를 설명해.
+5. 출제 가능성은 근거에 따라 높음/보통/낮음으로 분류하고 임의의 확률을 만들지 마.
+6. 학교별 출제 경향 자료가 없다면 특정 학교의 경향을 아는 것처럼 말하지 마.
+
+[원하는 결과]
+${wants.map((x,i)=>(i+1)+'. '+x).join('\n')}
+- 출제 우선순위 표와 판단 근거
+- 쉬운 문제부터 어려운 문제 순서로 구성
+- 정답 및 오답인 이유·풀이 근거
+- 시험 직전 암기 체크리스트
+
+[원칙]
+검색을 실제 수행하고 핵심 주장에 출처를 인용해. 확인된 사실과 네 분석을 구분해. 범위 밖 내용은 별도 표시해. 불확실하거나 자료가 부족하면 솔직하게 밝혀. 같은 내용을 반복하지 말고 충분한 문제를 만들어.
+이제 자료 조사부터 시작해 줘.`;
+ document.getElementById('prompt').value=p;
+ const searches=[`${subject} ${school} ${scope} 기출문제`,`${subject} ${scope} 핵심 정리`,`${subject} ${scope} 예상문제`,`${pub} ${subject} 교과서 학습자료 ${scope}`];
+ const labels=['공개 기출문제 검색','핵심 개념 자료 검색','예상문제 자료 검색','출판사 교과 자료 검색'];let box=document.getElementById('links');box.innerHTML='';
+ searches.forEach((q,i)=>{let a=document.createElement('a');a.href='https://www.google.com/search?q='+encodeURIComponent(q);a.target='_blank';a.rel='noopener';a.textContent=labels[i];box.appendChild(a)});
+ document.getElementById('result').style.display='block';document.getElementById('result').scrollIntoView({behavior:'smooth'});
+}
+async function copyText(){let t=v('prompt');try{await navigator.clipboard.writeText(t)}catch(e){let a=document.getElementById('prompt');a.select();document.execCommand('copy')}alert('요청문을 복사했습니다. ChatGPT에 붙여넣으세요.')}
+function saveText(){let b=new Blob([v('prompt')],{type:'text/plain;charset=utf-8'});let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='시험범위_AI분석요청문.txt';a.click();URL.revokeObjectURL(a.href)}
+</script></body></html>
